@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UAssetAPI;
 using UAssetAPI.PropertyTypes;
+using UAssetAPI.StructTypes;
 
 namespace DeepRockGalactic_GuidsGenerator
 {
@@ -17,6 +19,16 @@ namespace DeepRockGalactic_GuidsGenerator
         public static Export? GetExportByName(this UAsset asset, string name)
         {
             return asset.Exports.Where(e => e.ObjectName.Value.Value == name).FirstOrDefault();
+        }
+
+        public static IEnumerable<Export> GetExportsByName(this UAsset asset, string name)
+        {
+            return asset.Exports.Where(e => e.ObjectName.Value.Value == name);
+        }
+
+        public static IEnumerable<Export> GetExportsByName(this UAsset asset, Func<string, bool> predicate)
+        {
+            return asset.Exports.Where(e => predicate(e.ObjectName.Value.Value));
         }
 
         public static Export? GetExportByName(this UAsset asset, Func<string, bool> predicate)
@@ -46,6 +58,20 @@ namespace DeepRockGalactic_GuidsGenerator
                 default:
                     throw new ArgumentException("Can't resolve this text type!");
             }
+        }
+
+        public static Guid? GetSaveGameID(this NormalExport export)
+        {
+            var propertyData = export.GetPropertyData("SaveGameID") as StructPropertyData;
+            var guid = (propertyData?.Value.FirstOrDefault() as GuidPropertyData)?.Value;
+            return guid;
+        }
+
+        public static string? GetPlayerClass(this NormalExport export, UAsset asset)
+        {
+            var usedByProperty = export.GetPropertyData("UsedByCharacter") as ObjectPropertyData;
+            var usedBy = usedByProperty?.ToImport(asset).ObjectName.Value.Value;
+            return usedBy?.Substring(0, usedBy.Length - 2);
         }
     }
 }

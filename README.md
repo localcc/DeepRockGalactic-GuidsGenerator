@@ -1,6 +1,6 @@
 # DeepRockGalactic - Guids Generator
 
-Software that is used to generate `guids.json` used by [DeepRockGalactic save editor](https://github.com/localcc/deeprockgalactic-saveeditor).
+Software that is used to generate `matrix_cores.json` used by [DeepRockGalactic save editor](https://github.com/localcc/deeprockgalactic-saveeditor).
 
 ## Why?
 When DeepRockGalactic releases an update, this file should be regenerated for new overclocks to be available for editing in save editors.
@@ -12,7 +12,7 @@ When DeepRockGalactic releases an update, this file should be regenerated for ne
 ```
 DeepRockGalactic-GuidsGenerator.exe unpacked/FSD/Content
 ```
-- With any luck, after the software finishes you should have a `guids.json` file created
+- With any luck, after the software finishes you should have a `matrix_cores.json` file created
 - Paste the file in the folder with save editor executable and enjoy your new and shiny overclocks
 
 ## Building

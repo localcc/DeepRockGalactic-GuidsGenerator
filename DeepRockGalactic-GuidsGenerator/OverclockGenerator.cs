@@ -60,12 +60,7 @@ namespace DeepRockGalactic_GuidsGenerator
             return localizedWeaponNameProperty?.ResolveText(this._rootDir);
         }
 
-        private string? GetPlayerClass(UAsset asset, NormalExport export)
-        {
-            var usedByProperty = export.GetPropertyData("UsedByCharacter") as ObjectPropertyData;
-            var usedBy = usedByProperty?.ToImport(asset).ObjectName.Value.Value;
-            return usedBy?.Substring(0, usedBy.Length - 2);
-        }
+        
 
         private UAsset? GetOverclockAsset(UAsset rootAsset, NormalExport overclockExport, string weaponDir)
         {
@@ -90,42 +85,12 @@ namespace DeepRockGalactic_GuidsGenerator
             return overclockNameProperty?.ResolveText(this._rootDir);
         }
 
-        private OverclockCost? OverclockCostFromExport(UAsset asset, NormalExport export)
-        {
-            var craftingCostProperty = export.GetPropertyData("CraftingCost") as MapPropertyData;
-            if (craftingCostProperty == null) return null;
-
-            OverclockCost cost = new OverclockCost();
-            foreach (var craftingCurrency in craftingCostProperty.Value)
-            {
-                var currencyProperty = craftingCurrency.Key as ObjectPropertyData;
-                var currency = currencyProperty?.ToImport(asset).ObjectName.Value.Value.Split("_").Last();
-                if (currency == null)
-                {
-                    Console.Error.WriteLine($"Failed to get currency for: {export}");
-                    continue;
-                }
-                var currencyAmountProperty = craftingCurrency.Value as IntPropertyData;
-                if (currencyAmountProperty == null)
-                {
-                    Console.Error.WriteLine($"Failed to get amount of curency for: {export}");
-                    continue;
-                }
-                if (!cost.SetCost(currency, currencyAmountProperty.Value))
-                {
-                    Console.Error.WriteLine($"Failed to set cost for: {currency} {cost} {export}");
-                }
-            }
-            return cost;
-        }
-
         private OverclockData? OverclockFromExport(UAsset asset, NormalExport export, string weaponDir)
         {
-            var propertyData = export.GetPropertyData("SaveGameID") as StructPropertyData;
-            var guid = (propertyData?.Value.FirstOrDefault() as GuidPropertyData)?.Value;
-            if (guid == null) return null;
 
-            var guidString = guid.Value.ToStringCustom();
+
+            var guidString = export.GetSaveGameID()?.ToStringCustom();
+            if (guidString == null) return null;
 
             var weaponName = GetWeaponName(weaponDir);
             if (weaponName == null)
@@ -134,7 +99,7 @@ namespace DeepRockGalactic_GuidsGenerator
                 weaponName = $"FIXME{weaponDir}";
             }
 
-            var playerClass = GetPlayerClass(asset, export);
+            var playerClass = export.GetPlayerClass(asset);
             if (playerClass == null)
             {
                 Console.Error.WriteLine($"Failed to get player class for: {weaponDir}");
@@ -155,7 +120,7 @@ namespace DeepRockGalactic_GuidsGenerator
                 overclockName = $"FIXME{weaponDir}";
             }
 
-            var cost = OverclockCostFromExport(asset, export);
+            var cost = MatrixCoreCost.FromExport(asset, export);
             if (cost == null)
             {
                 Console.Error.WriteLine($"Failed to get overclock cost for {weaponDir}");
