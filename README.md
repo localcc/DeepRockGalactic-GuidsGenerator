@@ -6,11 +6,11 @@ Software that is used to generate `guids.json` used by [DeepRockGalactic save ed
 When DeepRockGalactic releases an update, this file should be regenerated for new overclocks to be available for editing in save editors.
 
 ## Usage
-- Download newest release from [releases]() page
+- Download newest release from [releases](https://github.com/localcc/DeepRockGalactic-GuidsGenerator/releases/latest) page
 - Unpack DeepRockGalactic game files using [DRGPackerv2](https://github.com/DRG-Modding/Useful-Scripts/)
 - Run Guids generator with path to unpacked game files like this
 ```
-GuidsGenerator.exe unpacked/FSD/Content
+DeepRockGalactic-GuidsGenerator.exe unpacked/FSD/Content
 ```
 - With any luck, after the software finishes you should have a `guids.json` file created
 - Paste the file in the folder with save editor executable and enjoy your new and shiny overclocks
